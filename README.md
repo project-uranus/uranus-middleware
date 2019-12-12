@@ -34,6 +34,8 @@ env FLASK_APP=uranus_middleware.app python -m flask run
 
 ### Visual Studio Code
 
+In `.vscode/settings.json`:
+
 ```json
 // lint
 "python.linting.enabled": true,
@@ -46,6 +48,9 @@ env FLASK_APP=uranus_middleware.app python -m flask run
 "[python]": {
     "editor.formatOnSave": true,
 },
+
+// testing
+"python.testing.pytestEnabled": true,
 ```
 
 ## License
