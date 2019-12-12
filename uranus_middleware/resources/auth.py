@@ -29,7 +29,9 @@ class Auth(Resource):
             return {
                 'token': create_jwt(user)
             }, 201
-        return 'error', 400
+        return {
+            'message': 'invalid email or password'
+        }, 400
 
 
 auth_api.add_resource(Auth, '/auth')
