@@ -1,0 +1,27 @@
+name: Uranus Middleware
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      uses: abatilo/actions-poetry@v1.1.0
+      with:
+        python_version: 3.7.4
+        poetry_version: 0.12.17
+        args: install
+    - name: Test with pytest
+      uses: abatilo/actions-poetry@v1.1.0
+      with:
+        python_version: 3.7.4
+        poetry_version: 0.12.17
+        args: run python -m pytest tests/
