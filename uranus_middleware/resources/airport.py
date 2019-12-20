@@ -13,7 +13,7 @@ class Airport(Resource):
     @admin_required
     def get(self):
         return {
-            "value": list(map(lambda x: x.get('iata'), AirportModel.find()))
+            "value": [airport.get('iata') for airport in AirportModel.find()]
         }
 
 
