@@ -30,3 +30,7 @@ def passenger_required(fn):
         user = get_jwt()
         return fn(*args, **kwargs) if user['role'] == 'passenger' else unauthorized
     return wrapper
+
+
+def get_user_id():
+    return get_jwt().get('identifier')

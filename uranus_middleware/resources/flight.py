@@ -4,9 +4,10 @@ from flask import Blueprint
 
 from flask_restful import Api, Resource, reqparse
 
-from uranus_middleware.auth_utils import admin_required, passenger_required
+from uranus_middleware.auth_utils import admin_required, get_user_id, passenger_required
 from uranus_middleware.error import error
 from uranus_middleware.models.flight import Flight as FlightModel, FlightStatus
+from uranus_middleware.models.passenger import Passenger as PassengerModel
 
 flight_blueprint = Blueprint('flights', __name__)
 flight_api = Api(flight_blueprint)
@@ -22,8 +23,9 @@ class Flight(Resource):
                 'value': {} if len(found) == 0 else found[0]
             }
         else:
+            passenger_found = PassengerModel.find({'Passenger.user.id': get_user_id()})
             return {
-                'value': FlightModel.find()
+                'value': [passenger.get('flight') for passenger in passenger_found]
             }
 
     @admin_required
