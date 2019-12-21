@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_jwt_simple import JWTManager
 
 from uranus_middleware.endpoints import init_app, socketio
-from uranus_middleware.resources import airport, auth, flight, health, passenger, user
+from uranus_middleware.resources import airport, auth, flight, health, infomation, passenger, password, user
 
 
 app = Flask(__name__)
@@ -35,6 +35,8 @@ app.register_blueprint(auth.auth_blueprint)
 app.register_blueprint(airport.airport_blueprint)
 app.register_blueprint(flight.flight_blueprint)
 app.register_blueprint(passenger.passenger_blueprint)
+app.register_blueprint(password.password_blueprint)
+app.register_blueprint(infomation.info_blueprint)
 CORS(app)
 init_app(app)
 
