@@ -15,11 +15,11 @@ class Auth(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('password', required=True)
-        parser.add_argument('email', required=True)
+        parser.add_argument('id_number', required=True)
         data = parser.parse_args()
-        email = data['email']
+        id_number = data['id_number']
         password = data['password']
-        users = User.find({'User.email': email})
+        users = User.find({'User.id_number': id_number})
         if len(users) == 0:
             return {
                 'message': 'no user found'
@@ -30,7 +30,7 @@ class Auth(Resource):
                 'token': create_jwt(user)
             }, 201
         return {
-            'message': 'invalid email or password'
+            'message': 'invalid id number or password'
         }, 400
 
 
