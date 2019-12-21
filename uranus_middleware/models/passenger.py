@@ -7,8 +7,6 @@ from uranus_middleware.models.model import Model
 class Passenger(Model):
     user: dict  # composed
     flight: dict  # composed
-    boarding_pass: int
-    luggage: int
     seat: str
 
-    __slots__ = ('user', 'flight', 'boarding_pass', 'luggage', 'seat')
+    __slots__ = ('user', 'flight', 'seat')
