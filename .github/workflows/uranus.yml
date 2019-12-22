@@ -1,5 +1,8 @@
 name: Uranus Middleware
 
+env:
+  TAG: v0.1.1
+
 on:
   push:
     branches:
@@ -27,3 +30,9 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+    - name: Login to GitHub Package Registry
+      run: docker login docker.pkg.github.com -u owner -p ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag docker.pkg.github.com/project-uranus/uranus-middleware/uranus-middleware:${TAG}
+    - name: Push the image to GitHub Package Registry
+      run: docker.pkg.github.com/project-uranus/uranus-middleware/uranus-middleware:${TAG}
