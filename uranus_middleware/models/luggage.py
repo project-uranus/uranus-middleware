@@ -17,3 +17,11 @@ class Luggage(Model):
     status: str
 
     __slots__ = ('passenger', 'weight', 'status')
+
+
+def filter_luggage_information(luggage: dict) -> dict:
+    return {
+        'luggage_id': luggage.get('id'),
+        'weight': luggage.get('weight'),
+        'status': luggage.get('status')
+    }

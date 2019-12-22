@@ -32,6 +32,7 @@ def get_airport_detail(iata: str) -> dict:
     return {
         'name': found.get('name'),
         'IATA': iata,
+        'position': found.get('position'),
         'latitude': found.get('latitude'),
         'longitude': found.get('longitude')
     }
