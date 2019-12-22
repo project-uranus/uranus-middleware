@@ -35,4 +35,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag docker.pkg.github.com/project-uranus/uranus-middleware/uranus-middleware:${TAG}
     - name: Push the image to GitHub Package Registry
-      run: docker.pkg.github.com/project-uranus/uranus-middleware/uranus-middleware:${TAG}
+      run: docker push docker.pkg.github.com/project-uranus/uranus-middleware/uranus-middleware:${TAG}
