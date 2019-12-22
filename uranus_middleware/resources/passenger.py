@@ -8,7 +8,7 @@ from flask_restful import Api, Resource, reqparse
 from uranus_middleware.auth_utils import admin_required, roles_required
 from uranus_middleware.models.boarding_pass import Pass as BoardingPassModel
 from uranus_middleware.models.flight import Flight as FlightModel
-from uranus_middleware.models.passenger import Passenger as PassengerModel, PassengerStatus
+from uranus_middleware.models.passenger import Passenger as PassengerModel, PassengerStatus, filter_passenger_info
 from uranus_middleware.models.user import Role, User as UserModel
 
 import werkzeug
@@ -25,11 +25,13 @@ class Passenger(Resource):
         parser.add_argument('flight', required=False)
         data = parser.parse_args()
         if data.get('flight'):
+            passenger_list = PassengerModel.find({'Passenger.flight.id': data.get('flight')})
             return {
-                'value': PassengerModel.find({'Passenger.flight.id': data.get('flight')})
+                'value': [filter_passenger_info(passenger) for passenger in passenger_list]
             }
+        passenger_list = PassengerModel.find()
         return {
-            'value': PassengerModel.find()
+            'value': [filter_passenger_info(passenger) for passenger in passenger_list]
         }
 
     @admin_required

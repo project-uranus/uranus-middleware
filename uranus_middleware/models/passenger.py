@@ -20,3 +20,16 @@ class Passenger(Model):
     seat: str
 
     __slots__ = ('user', 'flight', 'seat')
+
+
+def filter_passenger_info(passenger: dict) -> dict:
+    user = passenger.get('user', {})
+    return {
+        'id': passenger.get('id'),
+        'seat': passenger.get('seat'),
+        'name': user.get('name'),
+        'email': user.get('email'),
+        'id_number': user.get('id_number'),
+        'first_name': user.get('first_name'),
+        'last_name': user.get('last_name')
+    }
