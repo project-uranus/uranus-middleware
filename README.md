@@ -26,8 +26,7 @@ poetry install
 Enter virtual environment then run the Flask application.
 
 ```shell
-source ~/Library/Caches/pypoetry/virtualenvs/uranus-middleware-py3.7/bin/activate
-env FLASK_APP=uranus_middleware.app python -m flask run
+python -m uranus_middleware.app
 ```
 
 ## Configuration
