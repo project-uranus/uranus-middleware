@@ -6,12 +6,14 @@ from flask_cors import CORS
 
 from flask_jwt_simple import JWTManager
 
-from uranus_middleware.endpoints import init_app, socketio
-from uranus_middleware.resources import airport, auth, flight, health, infomation, passenger, password, user
-
+from uranus_middleware.auth_utils import JWT_SECRET_KEY
+from uranus_middleware.endpoints import init_app
+from uranus_middleware.resources import (
+    airport, auth, boarding_pass, check_in, flight, health, infomation, luggage, passenger, password, user
+)
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'uranus-secret'
+app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 
 JWT_EXPIRES = timedelta(days=1)
 jwt = JWTManager(app)
@@ -37,8 +39,14 @@ app.register_blueprint(flight.flight_blueprint)
 app.register_blueprint(passenger.passenger_blueprint)
 app.register_blueprint(password.password_blueprint)
 app.register_blueprint(infomation.info_blueprint)
+app.register_blueprint(check_in.checkin_blueprint)
+app.register_blueprint(luggage.luggage_blueprint)
+app.register_blueprint(boarding_pass.boarding_pass_blueprint)
 CORS(app)
 init_app(app)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    server.serve_forever()
