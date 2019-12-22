@@ -5,11 +5,11 @@ from flask import Blueprint
 
 from flask_restful import Api, Resource, reqparse
 
-from uranus_middleware.auth_utils import admin_required
-from uranus_middleware.models.boarding_pass import Pass as PassModel
+from uranus_middleware.auth_utils import admin_required, roles_required
+from uranus_middleware.models.boarding_pass import Pass as BoardingPassModel
 from uranus_middleware.models.flight import Flight as FlightModel
-from uranus_middleware.models.passenger import Passenger as PassengerModel
-from uranus_middleware.models.user import User as UserModel
+from uranus_middleware.models.passenger import Passenger as PassengerModel, PassengerStatus
+from uranus_middleware.models.user import Role, User as UserModel
 
 import werkzeug
 
@@ -18,6 +18,19 @@ passenger_api = Api(passenger_blueprint)
 
 
 class Passenger(Resource):
+
+    @roles_required((Role.ADMINISTRATOR, Role.STAFF))
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('flight', required=False)
+        data = parser.parse_args()
+        if data.get('flight'):
+            return {
+                'value': PassengerModel.find({'Passenger.flight.id': data.get('flight')})
+            }
+        return {
+            'value': PassengerModel.find()
+        }
 
     @admin_required
     def post(self):
@@ -53,7 +66,7 @@ class Passenger(Resource):
             else:
                 passenger = found_passenger[0]
             # create boarding pass
-            boarding_pass = PassModel(
+            boarding_pass = BoardingPassModel(
                 {'id': passenger['id']},
                 name,
                 found_flight['origin_airport'],
@@ -63,16 +76,12 @@ class Passenger(Resource):
                 date_of_flight,
                 compartment_code,
                 seat,
-                0  # Ticket issuance/passenger not checked in
+                PassengerStatus.TICKET_ISSUANCE_PASSENGER_NOT_CHECKED_IN.value
             )
             boarding_pass.save()
         return {
             'message': 'ok'
         }
-
-    @admin_required
-    def get(self):
-        return PassengerModel.find()
 
 
 passenger_api.add_resource(Passenger, '/passengers')
