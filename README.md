@@ -1,5 +1,6 @@
 # Uranus Middleware
 
+[![Build Status](https://github.com/project-uranus/uranus-middleware/workflows/uranus/badge.svg)](https://github.com/project-uranus/uranus-middleware/actions)
 [![flake8](https://img.shields.io/badge/linter-flake8-blue)](https://github.com/PyCQA/flake8)
 [![yapf](https://img.shields.io/badge/formatter-yapf-blue)](https://github.com/google/yapf)
 
