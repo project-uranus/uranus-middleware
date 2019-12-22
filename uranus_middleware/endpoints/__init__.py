@@ -15,7 +15,8 @@ class SocketHolder(object):
     def notify(self, key, message):
         key = int(key)
         message = dumps(message, ensure_ascii=False)
-        self.__connections[key].send(message)
+        if key in self.__connections:
+            self.__connections[key].send(message)
 
     def broadcast(self, message):
         message = dumps(message, ensure_ascii=False)
@@ -25,7 +26,8 @@ class SocketHolder(object):
 
     def remove(self, key):
         key = int(key)
-        del self.__connections[key]
+        if key in self.__connections:
+            del self.__connections[key]
 
 
 def init_app(app):
