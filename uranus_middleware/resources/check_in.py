@@ -18,11 +18,9 @@ class CheckIn(Resource):
     @passenger_required
     def post(self):
         parser = reqparse.RequestParser()
-        print('a')
         parser.add_argument('number_of_luggages', required=True)
         parser.add_argument('accompanying_persons', type=list, required=True, location='json')
         data = parser.parse_args()
-        print(data)
         user_id = get_user_id()
         number_of_luggages = int(data['number_of_luggages']) or 0
         fellow_id_numbers = data['accompanying_persons']

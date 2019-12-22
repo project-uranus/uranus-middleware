@@ -52,7 +52,7 @@ class Luggage(Resource):
         # update boarding pass status
         boarding_pass = BoardingPassModel.find({'Pass.passenger.id': data['passenger_id']})[0]
         BoardingPassModel.update(
-            boarding_pass.get('id'), 
+            boarding_pass.get('id'),
             {
                 'passenger_status': PassengerStatus.TICKET_ISSUANCE_PASSENGER_CHECKED_IN.value
             }
