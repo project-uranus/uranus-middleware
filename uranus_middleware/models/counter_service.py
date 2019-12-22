@@ -28,8 +28,8 @@ class CounterService(object):
         self.__counters[counter.counter_id] = counter
         return counter.counter_id
 
-    def remove(self, counter: Counter):
-        del self.__counters[counter.counter_id]
+    def remove(self, counter_id: int):
+        del self.__counters[counter_id]
 
     def length_add(self, counter_id: int):
         counter = self.__counters[counter_id]
