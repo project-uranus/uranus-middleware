@@ -9,6 +9,7 @@ from uranus_middleware.error import error
 from uranus_middleware.models.airport import get_airport_detail, get_airport_with_pos
 from uranus_middleware.models.boarding_pass import Pass as BoardingPassModel
 from uranus_middleware.models.flight import Flight as FlightModel, FlightStatus
+from uranus_middleware.models.luggage import Luggage as LuggageModel, filter_luggage_information
 from uranus_middleware.models.passenger import Passenger as PassengerModel
 from uranus_middleware.models.user import Role
 
@@ -30,7 +31,7 @@ class Flight(Resource):
             else:
                 found_pass = found[0]
                 found_flight = found[0].get('passenger', {}).get('flight')
-                return {
+                result = {
                     'value': {
                         'flight': {
                             **found_flight,
@@ -43,6 +44,14 @@ class Flight(Resource):
                         }
                     }
                 }
+                if get_user_role() == Role.PASSENGER:
+                    # we can get luggage only for passenger
+                    user_id = get_user_id()
+                    luggages = LuggageModel.find({'Luggage.passenger.user.id': user_id})
+                    luggages = list(filter(lambda x: x.get('passenger', {}).get('flight', {}).get('id') == int(id), luggages))
+                    luggages = [filter_luggage_information(luggage) for luggage in luggages]
+                    result['value']['spec']['luggages'] = luggages
+                return result
         else:
             # get flight list
             role = get_user_role()

@@ -34,3 +34,13 @@ class User(Model):
     @staticmethod
     def generate_digest(password: str) -> str:
         return md5(password.encode('utf-8')).hexdigest()
+
+
+def filter_information(user: dict) -> dict:
+    return {
+        'email': user.get('email'),
+        'name': user.get('name'),
+        'first_name': user.get('first_name'),
+        'last_name': user.get('last_name'),
+        'id_number': user.get('id_number'),
+    }
