@@ -59,7 +59,15 @@ class Flight(Resource):
                 passenger_found = PassengerModel.find({'Passenger.user.id': get_user_id()})
                 flights = [passenger.get('flight') for passenger in passenger_found]
             else:
-                flights = FlightModel.find()
+                parser = reqparse.RequestParser()
+                parser.add_argument('passenger_id', required=False)
+                data = parser.parse_args()
+                passenger_id = data['passenger_id']
+                if passenger_id:
+                    passenger_found = PassengerModel.find({'Passenger.id': passenger_id})
+                    flights = [passenger.get('flight') for passenger in passenger_found]
+                else:
+                    flights = FlightModel.find()
             flights_extended = [{
                 **flight,
                 'origin_airport': get_airport_with_pos(flight.get('origin_airport')),
