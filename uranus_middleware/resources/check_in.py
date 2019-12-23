@@ -28,6 +28,10 @@ class CheckIn(Resource):
         fellows = list(filter(lambda x: x.get('user', {}).get('id_number') in
                               fellow_id_numbers or x.get('user', {}).get('id') == user_id, all_user))
         counter_id = counter_service.allocate_counter(number_of_luggages, fellows)
+        if counter_id is None:
+            return {
+                'message': 'no counter available!'
+            }
         counter_service.length_add(counter_id)
         # send ws message to counter staff
         all_boarding_pass = BoardingPassModel.find()

@@ -19,7 +19,12 @@ class BoardingPass(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('flight_id', required=True)
         data = parser.parse_args()
-        boarding_pass = BoardingPassModel.find({'Pass.passenger.flight.id': data['flight_id']})[0]
+        found_boarding_pass = BoardingPassModel.find({'Pass.passenger.flight.id': data['flight_id']})
+        if len(found_boarding_pass) == 0:
+            return {
+                'message': 'not found'
+            }, 404
+        boarding_pass = found_boarding_pass[0]
         # encode boarding pass
         return {
             'token': 'M1EWING/SHAUN MR       1A11A1 BNESYDQF 551  107Y26J 37    00'
