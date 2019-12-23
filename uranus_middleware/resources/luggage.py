@@ -47,6 +47,15 @@ class Luggage(Resource):
             }
         }
         security.broadcast(ws_data)
+        # notify passenger
+        notification.notify(saved.get('passenger', {}).get('user', {}).get('id'), {
+            'type': 'notification',
+            'message': {
+                'title': 'Passenger status changed',
+                'body': 'Check-in succeeded!'
+            }
+        })
+
         # remove from counter queue
         counter_service.length_sub(get_user_id())
         # update boarding pass status
