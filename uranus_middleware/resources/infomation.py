@@ -18,7 +18,7 @@ class Information(Resource):
     @jwt_required
     def get(self):
         return {
-            'value': UserModel.find({'User.id': get_user_id()})
+            'value': UserModel.find({'User.id': get_user_id()})[0]
         }
 
     @jwt_required
@@ -31,7 +31,8 @@ class Information(Resource):
         parser.add_argument('id_number', required=False)
         data = parser.parse_args()
         user_id = get_user_id()
-        return UserModel.update(user_id, data) or error(HTTPStatus.NOT_FOUND)
+        updated = UserModel.update(user_id, data)
+        return {'message': 'ok'} if updated else error(HTTPStatus.NOT_FOUND)
 
 
 info_api.add_resource(Information, '/information')

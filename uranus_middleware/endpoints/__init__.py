@@ -17,6 +17,8 @@ class SocketHolder(object):
         message = dumps(message, ensure_ascii=False)
         if key in self.__connections:
             self.__connections[key].send(message)
+        else:
+            print('not in connections!')
 
     def broadcast(self, message):
         message = dumps(message, ensure_ascii=False)

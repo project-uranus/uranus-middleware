@@ -20,11 +20,13 @@ class CheckIn(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('number_of_luggages', required=True)
         parser.add_argument('accompanying_persons', type=list, required=True, location='json')
+        parser.add_argument('flight_id', required=True)
         data = parser.parse_args()
         user_id = get_user_id()
+        flight_id = int(data['flight_id'])
         number_of_luggages = int(data['number_of_luggages']) or 0
         fellow_id_numbers = data['accompanying_persons']
-        all_user = PassengerModel.find()  # don't wanna send multiple requests for each of the fellows :(
+        all_user = PassengerModel.find({'Passenger.flight.id': flight_id})  # don't wanna send multiple requests for each of the fellows :(
         fellows = list(filter(lambda x: x.get('user', {}).get('id_number') in
                               fellow_id_numbers or x.get('user', {}).get('id') == user_id, all_user))
         counter_id = counter_service.allocate_counter(number_of_luggages, fellows)
