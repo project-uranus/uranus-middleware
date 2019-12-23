@@ -5,7 +5,7 @@ from random import choice
 @dataclass
 class Counter(object):
     counter_id: int
-    staff_id: str
+    staff_id: int
     is_available: bool
     length: int
 
@@ -35,11 +35,11 @@ class CounterService(object):
         counter = self.__counters[counter_id]
         counter.length += 1
 
-    def length_sub(self, staff_id: str):
+    def length_sub(self, staff_id: int):
         counter = self.find_by_staff(staff_id)
         counter.length -= 1
 
-    def find_by_staff(self, staff_id: str) -> Counter:
+    def find_by_staff(self, staff_id: int) -> Counter:
         return next(filter(lambda counter: counter.staff_id == staff_id, self.__counters.values()))
 
 

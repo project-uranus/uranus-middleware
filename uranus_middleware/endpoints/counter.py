@@ -21,4 +21,4 @@ def counter_socket(socket, token):
         print(f'message from counter: {message}')
         # counter.notify(user_id, message)  # echo
     counter.remove(counter_id)
-    counter_service.remove(counter_id)
+    # counter_service.remove(counter_id)

@@ -31,3 +31,7 @@ class Model(object):
             return None
         data = {**found[0], **params}
         return requests.put(f'{url}/{cls.__name__}/{id}', json=data).json()
+
+    @classmethod
+    def delete(cls, id) -> dict:
+        return requests.delete(f'{url}/{cls.__name__}/{id}').json()
