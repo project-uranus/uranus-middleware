@@ -58,6 +58,7 @@ class Flight(Resource):
             if role == Role.PASSENGER:
                 passenger_found = PassengerModel.find({'Passenger.user.id': get_user_id()})
                 flights = [passenger.get('flight') for passenger in passenger_found]
+                flights = sorted(flights, key=lambda x: x.get('date_of_flight'), reverse=True)
             else:
                 parser = reqparse.RequestParser()
                 parser.add_argument('passenger_id', required=False)

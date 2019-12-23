@@ -15,7 +15,7 @@ from uranus_middleware.resources import (
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 
-JWT_EXPIRES = timedelta(days=1)
+JWT_EXPIRES = timedelta(days=30)
 jwt = JWTManager(app)
 
 
