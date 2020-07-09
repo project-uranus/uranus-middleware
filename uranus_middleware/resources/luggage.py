@@ -16,7 +16,6 @@ luggage_api = Api(luggage_blueprint)
 
 
 class Luggage(Resource):
-
     @roles_required((Role.STAFF, Role.PASSENGER, Role.SECURITY))
     def get(self):
         parser = reqparse.RequestParser()
@@ -24,11 +23,10 @@ class Luggage(Resource):
         data = parser.parse_args()
         if data['id']:
             return {
-                'value': LuggageModel.find({'Luggage.passenger.id': data['id']})
+                'value':
+                LuggageModel.find({'Luggage.passenger.id': data['id']})
             }
-        return {
-            'value': LuggageModel.find()
-        }, 404
+        return {'value': LuggageModel.find()}, 404
 
     @staff_required
     def post(self):
@@ -36,39 +34,41 @@ class Luggage(Resource):
         parser.add_argument('weight', type=float, required=True)
         parser.add_argument('passenger_id', required=True)
         data = parser.parse_args()
-        luggage = LuggageModel({'id': data['passenger_id']}, data['weight'], LuggageStatus.NOT_CHECKED.value)
+        luggage = LuggageModel({'id': data['passenger_id']}, data['weight'],
+                               LuggageStatus.NOT_CHECKED.value)
         saved = luggage.save()
         # push to security (broadcast?)
         ws_data = {
             'type': 'luggage',
             'message': {
-                'information': filter_information(saved.get('passenger', {}).get('user', {})),
-                'luggages': saved.get('id')
+                'information':
+                filter_information(saved.get('passenger', {}).get('user', {})),
+                'luggages':
+                saved.get('id')
             }
         }
         security.broadcast(ws_data)
         # notify passenger
-        notification.notify(saved.get('passenger', {}).get('user', {}).get('id'), {
-            'type': 'notification',
-            'message': {
-                'title': 'Passenger status changed',
-                'body': 'Check-in succeeded!'
-            }
-        })
+        notification.notify(
+            saved.get('passenger', {}).get('user', {}).get('id'), {
+                'type': 'notification',
+                'message': {
+                    'title': 'Passenger status changed',
+                    'body': 'Check-in succeeded!'
+                }
+            })
 
         # remove from counter queue
         counter_service.length_sub(get_user_id())
         # update boarding pass status
-        boarding_pass = BoardingPassModel.find({'Pass.passenger.id': data['passenger_id']})[0]
+        boarding_pass = BoardingPassModel.find(
+            {'Pass.passenger.id': data['passenger_id']})[0]
         BoardingPassModel.update(
-            boarding_pass.get('id'),
-            {
-                'passenger_status': PassengerStatus.TICKET_ISSUANCE_PASSENGER_CHECKED_IN.value
-            }
-        )
-        return {
-            'message': 'ok'
-        }
+            boarding_pass.get('id'), {
+                'passenger_status':
+                PassengerStatus.TICKET_ISSUANCE_PASSENGER_CHECKED_IN.value
+            })
+        return {'message': 'ok'}
 
     @security_required
     def put(self):
@@ -81,41 +81,40 @@ class Luggage(Resource):
         passed = data['passed']
         message = data['message']
         if len(luggage_found) == 0:
-            return {
-                'message': 'not found'
-            }, 404
+            return {'message': 'not found'}, 404
         luggage = luggage_found[0]
         # update luggage status
         LuggageModel.update(
-            luggage.get('id'),
-            {
-                **luggage,
-                'status': LuggageStatus.CHECKED.value if passed else LuggageStatus.CHECK_FAILED.value
-            }
-        )
+            luggage.get('id'), {
+                **luggage, 'status':
+                LuggageStatus.CHECKED.value
+                if passed else LuggageStatus.CHECK_FAILED.value
+            })
         # update boarding pass status
-        boarding_pass = BoardingPassModel.find({'Pass.passenger.id': luggage.get('passenger', {}).get('id')})[0]
+        boarding_pass = BoardingPassModel.find(
+            {'Pass.passenger.id': luggage.get('passenger', {}).get('id')})[0]
         BoardingPassModel.update(
-            boarding_pass.get('id'),
-            {
-                'passenger_status': (PassengerStatus.BAG_CHECKED_PASSENGER_CHECKED_IN.value if passed
-                                     else PassengerStatus.TICKET_ISSUANCE_PASSENGER_CHECKED_IN.value)
-            }
-        )
+            boarding_pass.get('id'), {
+                'passenger_status':
+                (PassengerStatus.BAG_CHECKED_PASSENGER_CHECKED_IN.value
+                 if passed else
+                 PassengerStatus.TICKET_ISSUANCE_PASSENGER_CHECKED_IN.value)
+            })
 
         # notify passenger
         notify_msg = {
             'type': 'notification',
             'message': {
-                'title': 'Luggage status changed',
-                'body': 'Your luggage has passed the check!' if passed else
-                    f'Your luggage has failed the check, reason: {message}'
+                'title':
+                'Luggage status changed',
+                'body':
+                'Your luggage has passed the check!' if passed else
+                f'Your luggage has failed the check, reason: {message}'
             }
         }
-        notification.notify(luggage.get('passenger', {}).get('user', {}).get('id'), notify_msg)
-        return {
-            'message': 'ok'
-        }
+        notification.notify(
+            luggage.get('passenger', {}).get('user', {}).get('id'), notify_msg)
+        return {'message': 'ok'}
 
 
 luggage_api.add_resource(Luggage, '/luggages')
