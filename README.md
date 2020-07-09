@@ -22,6 +22,8 @@ Then install the dependencies.
 poetry install
 ```
 
+
+
 ## Run
 
 Enter virtual environment then run the Flask application.
