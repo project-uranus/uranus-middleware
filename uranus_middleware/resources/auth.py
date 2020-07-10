@@ -12,7 +12,6 @@ auth_api = Api(auth_blueprint)
 
 
 class Auth(Resource):
-
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('password', required=True)
@@ -23,9 +22,7 @@ class Auth(Resource):
         password = data['password']
         users = User.find({'User.id_number': id_number})
         if len(users) == 0:
-            return {
-                'message': 'no user found'
-            }, 400
+            return {'message': 'no user found'}, 400
         user = users[0]
         if User.verify_digest(password, user['password']):
             user_agent = data['User-Agent']
@@ -37,12 +34,8 @@ class Auth(Resource):
                         'token': create_jwt(user),
                         'counter_id': counter_id
                     }
-            return {
-                'token': create_jwt(user)
-            }, 201
-        return {
-            'message': 'invalid id number or password'
-        }, 400
+            return {'token': create_jwt(user)}, 201
+        return {'message': 'invalid id number or password'}, 400
 
 
 auth_api.add_resource(Auth, '/auth')
